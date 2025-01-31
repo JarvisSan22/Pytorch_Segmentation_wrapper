@@ -1,0 +1,41 @@
+run_system: "unbuntu" # "unbuntu" "windows" "colab"
+system_lang: "en" # "en" "jp"
+train_image_dir: "DATA/landcover.ai.v1/output/train/img"
+train_mask_dir:  "DATA/landcover.ai.v1/output/train/mask"
+val_image_dir: "DATA/landcover.ai.v1/output/val/img"
+val_mask_dir: "DATA/landcover.ai.v1/output/val/mask"
+output_dir: "output/landcover/models"
+log_dir:  "output/landcover/models/logs"
+class_num: 5
+classes_names: ['background', 'trees', 'buildings', 'water']
+encoder:
+  name: resnet34
+  weights: imagenet
+  in_channels: 3
+  out_channels: 1
+decoder:
+  name: unet
+  in_channels: 3
+  activation: sigmoid # Options: ["sigmoid", "softmax"]
+learning_rate: 1e-4
+weight_decay: 1e-5   # Can experiment with [1e-4, 1e-5, 1e-6]
+lr_schedule: cosine # Options: ["linear", "cosine","step","exponential","reduce_on_plateau"]
+loss: Dice_loss #[Dice_loss,BCE_loss,Cross_entropy,Jaccard_loss,Tvereg_loss,Focal_loss,Lovasz_loss,SoftBCE_loss,MCC_loss]
+batch_size: 12
+epochs: 10
+patch_size: 512
+num_workers: 4
+train_args:
+  HorizontalFlip: 0.5
+  ShiftScaleRotate:
+    scale_limit: 0.5
+    rotate_limit: 0
+    shift_limit: 0.1
+    p: 1
+    border_mode: 0
+ 
+  OneOf_CLAHE_Brightness_Gamma: 0.5
+  OneOf_Sharpen_Blur: 0.5
+  OneOf_HueSaturation: 0.5
+validation_args:
+  HorizontalFlip: 0.5
